@@ -1,0 +1,11 @@
+com/txj/presto/udfs/RetainDaystateFactory$GroupedArrayAggregationState.class
+com/txj/presto/udfs/AbstractGroupedAccumulatorState.class
+com/txj/presto/udfs/UdfPlugin.class
+com/txj/presto/udfs/BigArrays.class
+com/txj/presto/udfs/Test.class
+com/txj/presto/udfs/ObjectBigArray.class
+com/txj/presto/udfs/RetainDaystateFactory.class
+com/txj/presto/udfs/RetainDaystateFactory$SingleArrayAggregationState.class
+com/txj/presto/udfs/RetainDaystate.class
+com/txj/presto/udfs/RetainDaystateSerializer.class
+com/txj/presto/udfs/BitmapAggregation.class

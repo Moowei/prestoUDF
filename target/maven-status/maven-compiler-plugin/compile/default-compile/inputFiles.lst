@@ -1,0 +1,9 @@
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/BitmapAggregation.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/UdfPlugin.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/ObjectBigArray.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/AbstractGroupedAccumulatorState.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/RetainDaystateSerializer.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/RetainDaystate.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/Test.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/BigArrays.java
+/Users/taptap/Desktop/prestoUDF/src/main/java/com/txj/presto/udfs/RetainDaystateFactory.java
