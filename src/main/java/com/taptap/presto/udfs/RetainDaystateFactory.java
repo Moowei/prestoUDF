@@ -1,7 +1,8 @@
 package com.taptap.presto.udfs;
 
 import com.facebook.presto.spi.function.AccumulatorStateFactory;
-import io.airlift.slice.SliceOutput;
+
+import java.util.List;
 
 
 /**
@@ -9,148 +10,70 @@ import io.airlift.slice.SliceOutput;
  * @Date 2019/12/30
  * @Author wangwei
  */
-public class RetainDaystateFactory implements AccumulatorStateFactory<RetainDaystate> {
+public class RetainDaystateFactory implements AccumulatorStateFactory<RetainDayState> {
 
-    public RetainDaystate createSingleState() {
+    public RetainDayState createSingleState() {
         return new SingleArrayAggregationState();
     }
 
-    public Class<? extends RetainDaystate> getSingleStateClass() {
+    public Class<? extends RetainDayState> getSingleStateClass() {
         return SingleArrayAggregationState.class;
     }
 
-    public RetainDaystate createGroupedState() {
-        return new GroupedArrayAggregationState(6);
+    public RetainDayState createGroupedState() {
+        return new GroupedArrayAggregationState();
     }
 
-    public Class<? extends RetainDaystate> getGroupedStateClass() {
+    public Class<? extends RetainDayState> getGroupedStateClass() {
         return GroupedArrayAggregationState.class;
     }
 
     /**
-     * 继承抽象的Group计算的类
+     * 继承抽象的Group计算的类 , 这个是用于做分布式计算的
      */
-    public static class GroupedArrayAggregationState extends AbstractGroupedAccumulatorState implements RetainDaystate {
+    public static class GroupedArrayAggregationState extends AbstractGroupedAccumulatorState implements RetainDayState {
 
-        private final ObjectBigArray<Integer> integerObjectBigArray = new ObjectBigArray<Integer>();
+        private final ObjectBigArray<List<Integer>> retainDayArray = new ObjectBigArray();
 
-        private int entries = 6;
-
-        //第二版的
-        private final ObjectBigArray<SliceOutput> slices = new ObjectBigArray<SliceOutput>();
-//        private final IntBigArray intBigArrayEntry = new IntBigArray();
-
-        public GroupedArrayAggregationState(int entries) {
-            this.entries = entries;
-        }
+        private final int ARRAY_SIZE = 30;
 
 
         public void ensureCapacity(long size) {
-            integerObjectBigArray.ensureCapacity(size);
+            retainDayArray.ensureCapacity(ARRAY_SIZE);
         }
 
-        public Integer[] getRetainArray() {
-            Integer[] resultArray = null;
-            if (integerObjectBigArray.sizeOf() <= 0 ){
-                 resultArray = new Integer[6];
-            }else {
-
-                for (int i = 0; i < integerObjectBigArray.sizeOf(); i++) {
-                    if (integerObjectBigArray.get(getGroupId()) != null){
-                        resultArray[i] = integerObjectBigArray.get(getGroupId());
-                    }
-
-                }
-            }
-            return resultArray;
-
+        public List<Integer> getRetainArray() {
+            return retainDayArray.get(getGroupId());
         }
 
-        public void setRetainArray(Integer[] retinArray) {
-            for (int i = 0; i < retinArray.length; i++) {
-                integerObjectBigArray.set(getGroupId(),retinArray[i]);
-            }
-        }
-
-        public int getEntries() {
-            return entries;
-        }
-
-        public void setEntries(int entries) {
-            this.entries = entries;
+        public void setRetainArray(List<Integer> values) {
+            retainDayArray.set(getGroupId(), values);
         }
 
         public long getEstimatedSize() {
-            return integerObjectBigArray.sizeOf();
+            return ARRAY_SIZE;
         }
-
-        //第二版分界线
-        public SliceOutput getSliceOutput() {
-            SliceOutput sliceOutput = slices.get(getGroupId());
-            return sliceOutput;
-        }
-
-        public void setSliceOutput(SliceOutput value) {
-            slices.ensureCapacity(getGroupId());
-            slices.set(getGroupId(), value);
-        }
-
     }
 
 
     /**
-     * 如果是单个数组
+     * 如果是单个数组, 这个是在单台机器上
      */
-    public static class SingleArrayAggregationState implements RetainDaystate {
+    public static class SingleArrayAggregationState implements RetainDayState {
 
-        private final ObjectBigArray<Integer> integerObjectBigArray = new ObjectBigArray<Integer>();
-        private int entries =  6;
+        private List<Integer> retainDayArrays;
+        private final int ARRAY_SIZE = 30;
 
-        //第二版
-        private SliceOutput slice;
-
-
-        public Integer[] getRetainArray() {
-            Integer[] resultArray = null;
-            if (integerObjectBigArray.sizeOf() <= 0 ){
-                resultArray = new Integer[6];
-            }else {
-                for (int i = 0; i < integerObjectBigArray.sizeOf(); i++) {
-                    if (integerObjectBigArray.get(i) != null){
-                        resultArray[i] = integerObjectBigArray.get(i);
-                    }
-
-                }
-            }
-            return resultArray;
+        public List<Integer> getRetainArray() {
+            return retainDayArrays;
         }
 
-        public void setRetainArray(Integer[] retinArray) {
-            for (int i = 0; i < retinArray.length; i++) {
-                integerObjectBigArray.set(i,retinArray[i]);
-            }
-        }
-
-        public int getEntries() {
-            return entries;
-        }
-
-        public void setEntries(int entries) {
-            this.entries = entries;
+        public void setRetainArray(List<Integer> retainArrayValues) {
+            this.retainDayArrays = retainArrayValues;
         }
 
         public long getEstimatedSize() {
-            return integerObjectBigArray.sizeOf();
-        }
-
-        //第二版开发
-        public SliceOutput getSliceOutput() {
-            return slice;
-        }
-
-        public void setSliceOutput(SliceOutput value) {
-            this.slice = value;
+            return ARRAY_SIZE;
         }
     }
-
 }
