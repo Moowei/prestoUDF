@@ -7,7 +7,7 @@ import java.util.Set;
 public class UdfPlugin  implements Plugin {
     public Set<Class<?>> getFunctions() {
         return ImmutableSet.<Class<?>>builder()
-                .add(BitmapAggregation.class)
+                .add(BitmapAggregationFunction.class)
                 .build();
     }
 }

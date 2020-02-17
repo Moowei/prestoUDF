@@ -16,8 +16,8 @@ import static com.facebook.presto.spi.block.PageBuilderStatus.DEFAULT_MAX_PAGE_S
 
 
 @AggregationFunction("calcRetain")
-public class BitmapAggregation {
-    private BitmapAggregation() {
+public class BitmapAggregationFunction {
+    private BitmapAggregationFunction() {
 
     }
 
