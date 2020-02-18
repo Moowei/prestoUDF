@@ -39,5 +39,6 @@ public interface RetainDayState extends AccumulatorState {
 
     void setRetainArray(List<Integer> values);
 
+    void addMemoryUsage(int value);
 
 }

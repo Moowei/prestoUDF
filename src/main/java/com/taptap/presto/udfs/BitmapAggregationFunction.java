@@ -25,8 +25,8 @@ public class BitmapAggregationFunction {
 
 //    Select calcRetain(user.identifyTime , event.inserttime) From event Join user  on user.identify = event.identify
 //    Where event.name = 'HAU'
-//    AND user.identifyTime   BETWEEN timestamp  '2019-10-23 00:00:00.000' And timestamp '2019-10-28 23:59:59.000'
-//    AND  event.inserttime  BETWEEN timestamp  '2019-10-23 00:00:00.000' And timestamp '2019-11-05 23:59:59.000'
+//    AND user.identifyTime   BETWEEN timestamp  '2019-10-23 00:00:00.000' And timestamp '2019-10-26 23:59:59.000'
+//    AND  event.inserttime  BETWEEN timestamp  '2019-10-23 00:00:00.000' And timestamp '2019-11-10 23:59:59.000'
 //    Group by user.identify, user.identifytime ;
 
     /**

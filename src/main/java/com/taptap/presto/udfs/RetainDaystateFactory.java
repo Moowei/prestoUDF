@@ -1,6 +1,8 @@
 package com.taptap.presto.udfs;
 
 import com.facebook.presto.spi.function.AccumulatorStateFactory;
+import io.airlift.slice.SizeOf;
+import org.openjdk.jol.info.ClassLayout;
 
 import java.util.List;
 
@@ -35,11 +37,13 @@ public class RetainDaystateFactory implements AccumulatorStateFactory<RetainDayS
 
         private final ObjectBigArray<List<Integer>> retainDayArray = new ObjectBigArray();
 
-        private final int ARRAY_SIZE = 30;
+        public static final int INSTANCE_SIZE = ClassLayout.parseClass(RetainDayState.class).instanceSize();
+
+        private long size;
 
 
         public void ensureCapacity(long size) {
-            retainDayArray.ensureCapacity(ARRAY_SIZE);
+            retainDayArray.ensureCapacity(size);
         }
 
         public List<Integer> getRetainArray() {
@@ -50,8 +54,12 @@ public class RetainDaystateFactory implements AccumulatorStateFactory<RetainDayS
             retainDayArray.set(getGroupId(), values);
         }
 
+        public void addMemoryUsage(int value) {
+            size += value;
+        }
+
         public long getEstimatedSize() {
-            return ARRAY_SIZE;
+            return INSTANCE_SIZE + retainDayArray.sizeOf();
         }
     }
 
@@ -62,7 +70,8 @@ public class RetainDaystateFactory implements AccumulatorStateFactory<RetainDayS
     public static class SingleArrayAggregationState implements RetainDayState {
 
         private List<Integer> retainDayArrays;
-        private final int ARRAY_SIZE = 30;
+
+        public static final int INSTANCE_SIZE = ClassLayout.parseClass(RetainDayState.class).instanceSize();
 
         public List<Integer> getRetainArray() {
             return retainDayArrays;
@@ -72,8 +81,16 @@ public class RetainDaystateFactory implements AccumulatorStateFactory<RetainDayS
             this.retainDayArrays = retainArrayValues;
         }
 
+        public void addMemoryUsage(int value) {
+            //这里先进行忽略
+        }
+
         public long getEstimatedSize() {
-            return ARRAY_SIZE;
+            long estimatedSize = INSTANCE_SIZE;
+            if (retainDayArrays != null) {
+                estimatedSize += SizeOf.sizeOfDoubleArray(retainDayArrays.size());
+            }
+            return estimatedSize;
         }
     }
 }
